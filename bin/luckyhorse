@@ -1,0 +1,246 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+
+
+# Ugly hack
+if __name__ == '__main__':
+  import sys
+  sys.path.append('./')
+  sys.path.append('code/')
+
+
+
+import getopt
+import os.path, sys
+
+import dateutil.parser
+from textwrap import TextWrapper
+
+from utils.time import HORSEYTIEM
+from utils.time.tools \
+  import timestamp_to_printable as ts2p, \
+  to_epoch_timestamp as ts2epoch
+from utils.text import centreText
+
+from utils.config import CONFIG
+from bots.scaffold import Scaffold
+
+from storage import TradeStore, OrderStore
+
+from events.broker import QueuedBrokerBundle
+
+
+
+def print_help():
+  print()
+  print(centreText("🐎🐎🐎  LUCKY HORSE TRADING FRAMEWORK  🐎🐎🐎", 80))
+  print()
+  print("Usage: %s <opts>" % (sys.argv[0],) )
+  print( """
+Run LuckyHorse bots against past or current data, optionally trading based upon
+what we learn.
+
+ -h  --help               This text
+ -c  --config=            Location of ini file
+     --profile            Run under cProfile to find slow code
+ -q  --quiet              Suppress bot output (broken)
+ -v  --verbose            Lots of output!
+
+Running mode
+
+ -t  --test               Backtest historical data
+ -T  --trade              Real live trading.  BE CAREFUL!
+ -r  --record             Record events to a database.  Requires -s.
+ -g  --ingest             Ingest trades from a dump file
+
+Bot selection:
+
+ -l  --list-bots          List all known bots
+ -b  --bot=               Name of bot you wish to test
+     --vars=x=y[,a=b]     Comma-separated list of bot vars to override
+
+Backtest options:
+
+ -s  --sources=<desc>     Specify datasources for this run.  See notes below.
+                          For recording the label must be 'record'.
+ -e  --exchanges=<desc>   Specify exchanges for this run.  See notes below.
+ -l  --log                Log the bot's progress to LOGDIR/botname/run_time/
+
+Sources & Exchanges specification:
+
+Bots may take data from a variety of sources and LH has a system for specifying
+this.  Source labels are specified in the bot's source.  They may also be
+specified in the bot's section within the config file.  CLI overrides this.
+Spec is:
+
+<label>:<src_module>:<klass>[:src_opts]
+[|<label>:<src_module>:<klass>[:src_opts]]
+[|...]
+
+Multiple specs can be separated with pipe ('|') symbols.
+
+  """)
+
+
+
+def print_bot_list():
+  "Print a nicely-formatted list of the bots available"
+  print()
+  print(centreText("🐎🐎🐎       ALL KNOWN BOTS     🐎🐎🐎", 78) + "\n")
+  
+  wrapper = TextWrapper(width=78, initial_indent='  ', subsequent_indent='  ')
+
+  for botklass in Scaffold.listBots(hidden=False):
+    print("  [%s]" % botklass.PRINTABLE_NAME)
+    print()
+    print(wrapper.fill(botklass.DESCRIPTION.strip()))
+    print()
+    print()
+    
+
+
+# def record_to_db(source_desc, verbose):
+#   "Record orders & trades from a datasource straight to the DB"
+#   qbroker = QueuedBrokerBundle(maxsize=10)
+#   sources = Scaffold.createSources(source_desc, {}, qbroker)
+#   if 'record' not in sources:
+#     sys.exit("For recording you must specify a source with label 'record'")
+#   src = sources['record']
+#   ostore = OrderStore()
+#   qbroker[src.BROKER_CHANNEL].subscribe(ostore.event, 2000)
+#   tstore = TradeStore(session_id=session_id)
+#   qbroker[src.BROKER_CHANNEL].subscribe(tstore.event, 2000)
+#   if verbose:
+#     qbroker[src.BROKER_CHANNEL].subscribe(lambda e: print("EVENT:\t%s" % e), 0)
+#   src.start()
+# 
+#   # Have backplane dispatch events, using ts_update attributes to fake the
+#   # wallclock time.
+#   qbroker.run(src_thread_group=[src,], fake_time=True)
+
+def print_runmode_error():
+  sys.exit("Only one runmode permitted")
+
+
+
+  
+if __name__ == '__main__':
+
+  kwopts = [
+    'help', 'config=', 'profile', 'quiet',
+    'record', 'test', 'trade', 'ingest',
+    'list-bots', 'bot=', 'range-test-bot', 'vars=',
+    'sources', 'exchanges', 'log', 'verbose'
+  ]
+  try:
+    opts, args = getopt.getopt( sys.argv[1:], "hc:qlb:s:le:rvtTg", kwopts )
+  except getopt.GetoptError as e:
+    sys.exit(str(e))
+
+  config_file         = './conf/luckyhorse.ini'
+  bot_name            = None
+  do_log              = False
+  enable_profiler     = False
+  override_vars       = {}
+  quiet               = False
+  source_desc         = None
+  exch_desc           = None
+  verbose             = False
+  runmode             = None    # test/trade/record/ingest
+  
+  for o, a in opts:
+
+    if o in ('-h', '--help'):
+      print_help()
+      sys.exit(0)
+    elif o in ('-c', '--config'):
+      config_file = a
+    elif o in ('-t', '--test'):
+      if runmode is not None:
+        print_runmode_error()
+      runmode = 'test'
+    elif o in ('-T', '--trade'):
+      if runmode is not None:
+        print_runmode_error()
+      runmode = 'trade'
+    elif o in ('-r', '--record'):
+      if runmode is not None:
+        print_runmode_error()
+      runmode = 'record'
+    elif o in ('-g', '--ingest'):
+      if runmode is not None:
+        print_runmode_error()
+      runmode = 'ingest'
+    elif o in ('--list-bots', '-l'):
+      print_bot_list()
+      sys.exit(0)
+    elif o in ('--bot', '-b'):
+      bot_name = a
+    elif o in ('--log', '-l'):
+      do_log = True
+    elif o in ('--sources', '-s'):
+      source_desc = a
+    elif o in ('--exchanges', '-e'):
+      exch_desc = a
+    elif o in ('--profile',):
+      enable_profiler = True
+    elif o in ('--vars',):
+      all_vars = a.split(',')
+      for ovar in all_vars:
+        k, v = ovar.split('=')
+        override_vars[k] = v      # as a string; bots must cast it to correct types
+    elif o in ('--quiet', '-q'):
+      quiet = True
+    elif o in ('--verbose', '-v'):
+      verbose = True
+  
+  # Try to read our config file
+  if not os.path.isfile(config_file):
+    sys.exit("Can't read config file '%s'" % config_file)
+  CONFIG.read(config_file)
+  
+  # Print some helpful information
+  if len(opts) == 0:
+    print_help()
+    sys.exit(0)
+  
+  
+  #
+  # Run something!
+  #
+  
+  if runmode == 'record':
+    if bot_name is not None:
+      sys.exit("Bot name doesn't make sense in record mode")
+    if source_desc is None:
+      sys.exit("--record needs a -s source desc")
+    record_to_db(source_desc, verbose)
+    sys.exit(0)
+  #
+  elif runmode in ('trade', 'test'):
+    if bot_name is None:
+      sys.exit("You didn't specify a bot name")
+    
+    if runmode == 'test':
+      scaffold  = Scaffold(
+        bot_name,
+        bot_vars          = override_vars,
+        source_descriptor = source_desc,
+        exch_descriptor   = exch_desc,
+        verbose           = verbose
+      )
+    
+      scaffold.backtest()
+    #
+    else:
+      raise NotImplementedError()
+  #
+  elif runmode == 'ingest':
+    Scaffold.batchLoad(source_desc)
+  #
+  else:
+    # URRR NOT KNOW WHAT DO
+    print_help()
+    sys.exit(0)

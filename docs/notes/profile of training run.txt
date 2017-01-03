@@ -1,0 +1,147 @@
+./bin/lh-backtest --bot=monkeytree --trades-file=assets/bitstampUSD.csv.gz -p 2014-01-01  --vars=mode=train  --profile
+Will backtest 'monkeytree'
+Time window 2014-01-01t00:00:00 to -
+
+Overriding: {'mode': 'train'}
+MonkeyTreeBot: feeding events to _handlerTraining
+data/monkeytree/trained.pkl.bz2 did not exist; will create a new one on shutdown
+Training complete.  Total coverage 0.132
+Training complete.  Core coverage 0.136
+Training complete.  Micro coverage 0.167
+         143871636 function calls (143562120 primitive calls) in 374.195 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000  374.195  374.195 <string>:1(<module>)
+  3138327    6.571    0.000   70.853    0.000 _base.py:76(_csvlog)
+     1018    0.001    0.000    0.020    0.000 _methods.py:31(_sum)
+  3138327    4.735    0.000   28.335    0.000 _tools.py:125(append)
+  3138327   15.502    0.000   22.842    0.000 _tools.py:131(_prune)
+  3138327    6.830    0.000   36.179    0.000 _tools.py:238(append)
+    43627    0.021    0.000    0.021    0.000 _tools.py:243(__getitem__)
+    43627    1.851    0.000   12.469    0.000 _tools.py:95(linearRegressionGradient)
+        1    0.000    0.000    0.016    0.016 bz2.py:111(close)
+        1    0.000    0.000    0.000    0.000 bz2.py:137(closed)
+        1    0.000    0.000    0.000    0.000 bz2.py:172(_check_can_write)
+        1    0.000    0.000    0.001    0.001 bz2.py:367(write)
+        1    0.000    0.000    0.000    0.000 bz2.py:44(__init__)
+    21754    0.086    0.000    0.183    0.000 codecs.py:310(decode)
+        1    0.000    0.000    0.000    0.000 copyreg.py:96(_slotnames)
+  3138327    8.845    0.000   28.330    0.000 csv.py:144(_dict_to_list)
+  3138327    4.408    0.000    4.408    0.000 csv.py:146(<listcomp>)
+  3138327   11.711    0.000   15.077    0.000 csv.py:150(<listcomp>)
+  3138327    6.872    0.000   59.300    0.000 csv.py:152(writerow)
+  3138327    2.530    0.000  118.043    0.000 data.py:14(next_or_none)
+  3138327   24.552    0.000  113.212    0.000 datasource.py:101(fetch)
+  3138326   33.284    0.000   85.032    0.000 datasource.py:75(_makeTradeFromRow)
+    44645    0.100    0.000    0.367    0.000 fromnumeric.py:1283(ravel)
+     1018    0.005    0.000    0.027    0.000 fromnumeric.py:1623(sum)
+    21755    0.024    0.000    0.031    0.000 gzip.py:237(_check_closed)
+        1    0.000    0.000    0.000    0.000 gzip.py:277(_init_read)
+        1    0.000    0.000    0.000    0.000 gzip.py:281(_read_exact)
+        1    0.000    0.000    0.000    0.000 gzip.py:291(_read_gzip_header)
+    21754    0.153    0.000    1.693    0.000 gzip.py:378(read1)
+    21395    0.155    0.000    1.509    0.000 gzip.py:425(_read)
+    21394    0.182    0.000    0.325    0.000 gzip.py:469(_add_read_data)
+        1    0.000    0.000    0.000    0.000 gzip.py:477(_read_eof)
+  3160086    1.759    0.000    1.759    0.000 gzip.py:498(closed)
+        1    0.000    0.000    0.000    0.000 gzip.py:502(close)
+        1    0.000    0.000    0.000    0.000 gzip.py:517(flush)
+    21397    0.050    0.000    0.199    0.000 gzip.py:79(read)
+        1    0.000    0.000    0.000    0.000 gzip.py:92(prepend)
+  6276652   32.733    0.000   47.299    0.000 hmath.py:31(round_dec_down_to_n_places)
+    87254    0.207    0.000    0.990    0.000 linalg.py:106(_makearray)
+   131899    0.103    0.000    0.177    0.000 linalg.py:111(isComplexType)
+   130881    0.098    0.000    0.135    0.000 linalg.py:124(_realType)
+    43627    0.013    0.000    0.013    0.000 linalg.py:130(_linalgRealType)
+    43627    0.308    0.000    0.589    0.000 linalg.py:139(_commonType)
+    43627    0.155    0.000    0.204    0.000 linalg.py:168(_to_native_byte_order)
+    43627    2.471    0.000    8.730    0.000 linalg.py:1733(lstsq)
+    43627    0.198    0.000    0.485    0.000 linalg.py:180(_fastCopyAndTranspose)
+    43627    0.106    0.000    0.121    0.000 linalg.py:192(_assertRank2)
+        3    0.000    0.000    0.066    0.022 monkeytree.py:157(checkCoverage)
+   4179/3    0.026    0.000    0.066    0.022 monkeytree.py:167(_coverageTotals)
+     4179    0.015    0.000    0.015    0.000 monkeytree.py:169(<listcomp>)
+    43623    0.341    0.000    0.369    0.000 monkeytree.py:236(__getattr__)
+        1    0.000    0.000    0.023    0.023 monkeytree.py:246(save)
+     1392    0.005    0.000    0.005    0.000 monkeytree.py:43(__init__)
+     4176    0.004    0.000    0.005    0.000 monkeytree.py:49(__len__)
+     4179    0.009    0.000    0.016    0.000 monkeytree.py:58(_childNodes)
+     4179    0.006    0.000    0.006    0.000 monkeytree.py:60(<listcomp>)
+348960/43620    3.617    0.000    4.640    0.000 monkeytree.py:63(update)
+  3138327   30.214    0.000  166.474    0.000 mtbot.py:101(event)
+    43627    0.387    0.000    5.411    0.000 mtbot.py:137(_handlerTraining)
+    43627    0.319    0.000   12.788    0.000 mtbot.py:168(_windowMetric)
+    43627    0.209    0.000   13.034    0.000 mtbot.py:195(_updateMonkeyTree)
+        1    0.000    0.000    0.090    0.090 mtbot.py:205(shutdown)
+        1    0.000    0.000    0.066    0.066 mtbot.py:220(printTrainingStats)
+  3138327    5.620    0.000  123.663    0.000 multi.py:105(<listcomp>)
+        1   46.365   46.365  374.195  374.195 multi.py:76(run)
+  3138327    2.583    0.000    2.583    0.000 multi.py:92(<listcomp>)
+    43627    0.142    0.000    0.849    0.000 numeric.py:141(ones)
+   131899    0.248    0.000    0.852    0.000 numeric.py:394(asarray)
+  3138327    8.514    0.000   17.779    0.000 orderbook.py:254(event)
+  3138327    8.468    0.000    8.468    0.000 orderbook.py:282(_noteTradeBoundaries)
+        1    0.000    0.000    0.000    0.000 threading.py:75(RLock)
+  3138327    7.899    0.000    7.899    0.000 time.py:61(override)
+ 12553308   21.199    0.000   21.199    0.000 time.py:72(time)
+  3138326    4.449    0.000    4.449    0.000 trade.py:17(__init__)
+    87254    0.276    0.000    0.276    0.000 {built-in method _fastCopyAndTranspose}
+   263798    2.064    0.000    2.064    0.000 {built-in method array}
+    43627    0.355    0.000    0.355    0.000 {built-in method copyto}
+    21395    0.132    0.000    0.132    0.000 {built-in method crc32}
+    87254    1.792    0.000    1.792    0.000 {built-in method dgelsd}
+    43627    0.351    0.000    0.351    0.000 {built-in method empty}
+        1    0.000    0.000  374.195  374.195 {built-in method exec}
+   130877    0.137    0.000    0.137    0.000 {built-in method getattr}
+        1    0.000    0.000    0.000    0.000 {built-in method hasattr}
+ 12554325    3.235    0.000    3.235    0.000 {built-in method isinstance}
+   219153    0.151    0.000    0.151    0.000 {built-in method issubclass}
+  6984241    1.765    0.000    1.765    0.000 {built-in method len}
+    43627    0.059    0.000    0.059    0.000 {built-in method log}
+    87254    0.073    0.000    0.073    0.000 {built-in method max}
+   218135    0.135    0.000    0.135    0.000 {built-in method min}
+  3138327    2.301    0.000  115.513    0.000 {built-in method next}
+        1    0.000    0.000    0.000    0.000 {built-in method open}
+        3    0.000    0.000    0.000    0.000 {built-in method print}
+  3138327    8.492    0.000    8.492    0.000 {built-in method sorted}
+   353139    0.768    0.000    0.768    0.000 {built-in method sum}
+        1    0.000    0.000    0.000    0.000 {built-in method unpack}
+    21754    0.097    0.000    0.097    0.000 {built-in method utf_8_decode}
+   218135    0.503    0.000    0.503    0.000 {built-in method zeros}
+    87254    0.024    0.000    0.024    0.000 {method '__array_wrap__' of 'numpy.ndarray' objects}
+  3181954    0.775    0.000    0.775    0.000 {method 'append' of 'collections.deque' objects}
+    87254    0.040    0.000    0.040    0.000 {method 'append' of 'list' objects}
+    43627    0.087    0.000    0.087    0.000 {method 'astype' of 'numpy.ndarray' objects}
+        1    0.000    0.000    0.000    0.000 {method 'close' of '_io.BufferedReader' objects}
+        1    0.000    0.000    0.000    0.000 {method 'close' of '_io.BufferedWriter' objects}
+        1    0.001    0.001    0.001    0.001 {method 'compress' of '_bz2.BZ2Compressor' objects}
+    87254    0.240    0.000    0.240    0.000 {method 'copy' of 'numpy.ndarray' objects}
+    21394    0.830    0.000    0.830    0.000 {method 'decompress' of 'zlib.Decompress' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.006    0.006    0.007    0.007 {method 'dump' of '_pickle.Pickler' objects}
+        2    0.000    0.000    0.000    0.000 {method 'endswith' of 'str' objects}
+        1    0.015    0.015    0.015    0.015 {method 'flush' of '_bz2.BZ2Compressor' objects}
+ 15822516    3.403    0.000    3.403    0.000 {method 'get' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {method 'get' of 'mappingproxy' objects}
+   348960    0.065    0.000    0.065    0.000 {method 'items' of 'dict' objects}
+  3487246    0.508    0.000    0.508    0.000 {method 'popleft' of 'collections.deque' objects}
+  6276652   12.810    0.000   12.810    0.000 {method 'quantize' of 'decimal.Decimal' objects}
+    44645    0.088    0.000    0.088    0.000 {method 'ravel' of 'numpy.ndarray' objects}
+    21396    0.149    0.000    0.149    0.000 {method 'read' of '_io.BufferedReader' objects}
+     1018    0.019    0.000    0.019    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+  3491466    1.088    0.000    1.088    0.000 {method 'values' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 {method 'write' of '_io.BufferedWriter' objects}
+  3138327   24.098    0.000   24.098    0.000 {method 'writerow' of '_csv.writer' objects}
+
+
+
+================================================================================
+Event 'Trade' delivered       : 3138327
+
+Finishing balance             : $1000.00
+Alt rtn from buy-and-hold     : $468.65
+
+Bot's internal statistics:
+{'predict_correct': 0, 'predict_wrong': 0, 'total_buys': 0, 'total_sells': 0}

@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+
+
+# Ugly hack
+if __name__ == '__main__':
+  import sys
+  sys.path.append('./')
+  sys.path.append('code/')
+
+
+
+import getopt
+import os.path, sys
+
+import datetime
+
+from utils.text import centreText
+from utils.time import timestamp_to_printable as ts2p, to_epoch_timestamp as ts2epoch
+from utils.config import CONFIG
+
+import exchanges
+
+import storage.session
+from storage import OrderStore
+
+
+
+
+def print_help():
+  
+  print()
+  print(centreText("🐎🐎🐎  LUCKY HORSE DATABASE MAINTAINER  🐎🐎🐎", 78) + "\n")
+  print("Usage: %s <opts>" % (sys.argv[0],) )
+  print( """
+ -h  --help               this text
+ -c  --config=            location of ini file
+     --import <f>         import historical data frmo file <f>
+     --initdb             create fresh, empty database
+
+Common Options:
+
+ -s  --session=           ID of session to work with
+
+Session control
+     
+     --list-sessions      list every session_id that has been used
+     --compact-sessions   merge overlapping sessions within same exchange
+
+
+     
+  """)
+
+
+
+
+
+if __name__ == '__main__':
+
+  kwopts = [
+    'help', 'config=',
+    'import', 'initdb',
+    'session=', 'list-sessions', 'compact-sessions',
+  ]
+  try:
+    opts, args = getopt.getopt( sys.argv[1:], "hc:s:", kwopts )
+  except getopt.GetoptError as e:
+    sys.exit(str(e))
+
+  config_file       = './conf/luckyhorse.ini'
+  import_file       = None
+  session_id        = None
+  sessions_list     = False
+  sessions_compact  = False
+  
+  for o, a in opts:
+
+    if o in ('-h', '--help'):
+      print_help()
+      sys.exit(0)
+    elif o in ('-c', '--config'):
+      config_file = a
+    elif o in ('--initdb',):
+      print("Initialising new DB")
+    elif o in ('--import',):
+      import_file = True
+    elif o in ('--session', '-s'):
+      session_id = int(a)
+    elif o in ('--list-sessions',):
+      sessions_list = True
+    elif o in ('--compact-sessions',):
+      sessions_compact = True
+    
+
+  # Try to read our config file
+  if not os.path.isfile(config_file):
+    sys.exit("Can't read config file '%s'" % config_file)
+  CONFIG.read(config_file)
+
+  # What to do?
+  if sessions_list:
+    sess_store = storage.session.SessionStore()
+    for sess in sess_store.get(exchange_id=None, desc=True):
+      print("%5d %2d s:%19s e:%19s orders:%7d trades:%6d" % (
+        sess.session_id,
+        sess.exchange_id,
+        ts2p(sess.ts_update_start),
+        ts2p(sess.ts_update_end),
+        sess_store.orderCountInSession(sess.session_id),
+        sess_store.tradeCountInSession(sess.session_id)
+      ))
+    sys.exit(0)
+  elif sessions_compact:
+    sess_store = storage.session.SessionStore()
+    sess_store.pruneEmptySessions(exchange_id=1)
+    sess_store.compactSessions(exchange_id=1)
+    sys.exit(0)
+  elif import_file:
+    imp = Importer(exchange=exchanges.BitStampBackTest())
+
+    # import cProfile, pstats, io
+    # pr = cProfile.Profile()
+    # pr.enable()
+
+    for f in args:    # Assume all args are files to import
+      imp.ingest(f)
+
+    # pr.disable()
+    # s = io.StringIO()
+    # sortby = 'cumulative'
+    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    # ps.print_stats()
+    # print(s.getvalue() )
+
+    sys.exit(0)
+  else:
+    print_help()
+    sys.exit(0)
+
+    
+    

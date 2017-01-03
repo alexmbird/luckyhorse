@@ -87,3 +87,14 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+
+# Additional 
+_venv3/
+_build/
+
+# Application data
+db/*
+data/*
+logs/*
+assets/*

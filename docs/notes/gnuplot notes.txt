@@ -1,0 +1,114 @@
+sudo brew reinstall gnuplot --with-aquaterm
+
+
+
+http://people.duke.edu/~hpgavin/gnuplot.html
+
+http://www.gnuplot.info/demo/
+
+set datafile separator ','
+set xdata time
+set timefmt "%s"
+set format x "%H:%M"     # or %Y/%m/%d %H:%M
+
+set terminal aqua size 1200,700
+
+
+# Reading from gzipped data:
+# https://superuser.com/questions/341667/gnuplotting-gzipped-files
+
+# For long time periods:
+# http://gnuplot.sourceforge.net/docs_4.2/node295.html
+set format x "%Y/%m/%d"
+set xtics rotate by 45 right
+
+
+#
+#
+#   USE THIS LOT 
+#
+#
+set datafile separator ','
+set xdata time
+set timefmt "%s"
+set format x "%H:%M"     # or %Y/%m/%d %H:%M
+set format x "%Y/%m/%d %H:%M"
+set format x "%Y/%m/%d"
+
+set xlabel "time"
+set ylabel "money"
+
+
+set ytics nomirror
+set y2tics
+set grid x y2
+set y2range [0 : 10]
+
+plot \
+     'meandolly.csv' u 1:2:3 w filledcurves lc rgb "#ffaaaa" t 'trade zone',   \
+     'meandolly.csv' u 1:2 w dots lc rgb "black" t 'trades', \
+     'meandolly.csv' u 1:4 w lines lc rgb "#707070" t 'long_mean', \
+     'meandolly.csv' u 1:6 w points lw 2 lc "blue" t 'bought', \
+     'meandolly.csv' u 1:7 w points lw 2 lc "green" t 'sold',   \
+     'meandolly.csv' u 1:8 w lines lc rgb "blue" t '5_min_variance' axes x1y2
+
+# To do the same again:
+replot
+
+
+
+
+# No sd/variance
+plot \
+     'meandolly.csv' u 1:2:3 w filledcurves lc rgb "#ffaaaa" t 'trade zone',   \
+     'meandolly.csv' u 1:2 w dots lc rgb "black" t 'trades', \
+     'meandolly.csv' u 1:4 w lines lc rgb "#707070" t 'long_mean', \
+     'meandolly.csv' u 1:6 w points lw 2 lc "blue" t 'bought', \
+     'meandolly.csv' u 1:7 w points lw 2 lc "green" t 'sold'
+     
+
+
+set y2range [-5 : 20]
+#set y2tics 0.1
+
+plot \
+     'monkeytree.csv' u 1:2 w dots lc rgb "black" t 'trades', \
+     'monkeytree.csv' u 1:3 w points lw 2 lc "blue" t 'bought', \
+     'monkeytree.csv' u 1:4 w points lw 2 lc "green" t 'sold',    \
+     'monkeytree.csv' u 1:5 w lines lc rgb "blue" t 'wmetric' axes x1y2
+
+
+plot \
+     'shapefit.csv' u 1:2 w dots lc rgb "black" t 'trades', \
+     'shapefit.csv' u 1:3 w points lw 2 lc "blue" t 'bought', \
+     'shapefit.csv' u 1:4 w points lw 2 lc "green" t 'sold',    \
+     'shapefit.csv' u 1:5 w lines lc rgb "blue" t 'wmetric' axes x1y2
+
+
+
+
+
+# Plot for fbot
+# fields are timestamp, price_usd, buy_usd, sell_usd, pdi, ndi, adx
+
+set y2range [0 : 500]
+plot \
+     'fbot.csv' u 1:2 w dots lc rgb "black" t 'price', \
+     'fbot.csv' u 1:3 w points lw 2 lc "red" t 'bought', \
+     'fbot.csv' u 1:4 w points lw 2 lc "green" t 'sold',   \
+     'fbot.csv' u 1:5 w lines lc rgb "red" t '+di' axes x1y2,   \
+     'fbot.csv' u 1:6 w lines lc rgb "green" t '-di' axes x1y2, \
+     'fbot.csv' u 1:7 w lines lc rgb "grey" t 'adx' axes x1y2   
+
+set y2range [0 : 25]
+set y2tics 2
+plot \
+     'prediction.csv' u 1:2 w dots lc rgb "black" t 'real usd', \
+     'prediction.csv' u 1:3 w dots lw 2 lc "red" t 'predict usd', \
+     'prediction.csv' u 1:4 w line lw 1 lc "red" t 'error usd' axes x1y2
+     
+
+plot \
+     'hodlbot.csv' u 1:2 w dots lc rgb "black" t 'price', \
+     'hodlbot.csv' u 1:3 w points lw 2 lc "red" t 'bought', \
+     'hodlbot.csv' u 1:4 w points lw 2 lc "green" t 'sold'
