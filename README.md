@@ -3,6 +3,8 @@ Lucky Horse Bitcoin Trader
 
 __Lucky Horse was a project to test a couple of ideas I had about currency trading.  They were not successful and I'm publishing this only for posterity.  Writing the thing was fun but for the love of Imhotep, don't trust it with real money.__
 
+__I wrote a [blog post](https://mocko.org.uk/b/2017/01/03/step-3-unprofit-a-naive-experiment-in-cryptocurrency-trading/) discussing the project in more depth.__
+
 
 ![SUCH HORSE](docs/horserace.jpg)
 
